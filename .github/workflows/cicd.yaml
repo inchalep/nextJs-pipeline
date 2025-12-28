@@ -1,0 +1,31 @@
+name: Nextjs pipeline practice
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout here
+        uses: actions/checkout@v4
+      - name: copy env file
+        run: echo "MONGO_PASSWORD="
+      - name: build image using docker
+        run: docker build -t dnyaneshwarinchale/nextjs-app
+      - name: Login docker
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+      - name: push docker image
+        run: docker push dnyaneshwarinchale/nextjs-app:latest
+  
+  deploy:
+    needs: build
+    runs-on: Linux
+    steps:
+      - name: pull docker image
+        run: docker pull dnyaneshwarinchale/nextjs-app:latest
+      - name: remove existing container
+        run: docker rm -f nextjs-container
+      - name: run docker image of nextjs
+        run: docker run -d --name nextjs-container -p 3000:3000 dnyaneshwarinchale/nextjs-app:latest 
