@@ -8,9 +8,6 @@ RUN npm ci
 
 COPY . .
 
-RUN mv next.config.ts next.config.js
-
-
 RUN npm run build
 
 FROM node:20-alpine
@@ -23,7 +20,7 @@ RUN npm ci --omit=dev
 
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.* ./
+COPY --from=builder /app/next.config.js ./
 
 EXPOSE 3000
 
