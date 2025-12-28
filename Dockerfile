@@ -8,6 +8,9 @@ RUN npm ci
 
 COPY . .
 
+RUN mv next.config.ts next.config.js
+
+
 RUN npm run build
 
 FROM node:20-alpine
